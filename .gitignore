@@ -1,7 +1,3 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
-# Data and logs
-/data/*.log
-/data/strategy_results.json
