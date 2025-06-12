@@ -2,9 +2,7 @@
 __pycache__/
 *.py[cod]
 
-dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
 # Data and logs
 # Ignore log files
 /data/*.log
 # Keep sample strategy_results.json in version control
-
