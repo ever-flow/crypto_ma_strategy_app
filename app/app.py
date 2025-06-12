@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
@@ -16,6 +17,7 @@ warnings.filterwarnings('ignore')
 st.set_page_config(
     page_title="암호화폐 전략 분석",
     page_icon="📈",
+
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -272,6 +274,7 @@ def main():
     
     # 데이터 로드 (파일 변경 시에만 새로 읽음)
     results = load_strategy_results(_results_mtime())
+
     if not results:
         st.stop()
     
