@@ -1,3 +1,0 @@
-# 매일 오전 9시에 암호화폐 전략 데이터 업데이트
-0 9 * * * /home/ubuntu/crypto_strategy_app/update_data.sh
-
