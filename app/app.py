@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 import json
 import datetime
 from dateutil.relativedelta import relativedelta
+main
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -14,6 +15,7 @@ warnings.filterwarnings('ignore')
 st.set_page_config(
     page_title="🚀 암호화폐 최적 전략 분석",
     page_icon="🚀",
+main
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -147,11 +149,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 @st.cache_data
 def load_strategy_results():
     """저장된 전략 결과를 로드"""
     try:
         with open('data/strategy_results.json', 'r', encoding='utf-8') as f:
+main
             return json.load(f)
     except FileNotFoundError:
         st.error("❌ 전략 결과 파일을 찾을 수 없습니다. 데이터 업데이트가 필요합니다.")
@@ -247,20 +251,25 @@ def main():
     <div class="hero-section">
         <h1 class="hero-title">🚀 암호화폐 최적 전략 분석</h1>
         <p class="hero-subtitle">AI 기반 이동평균 최적화 • 실시간 매수/매도 신호 • 고도화된 성과 분석</p>
+ main
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(
         """<div style='text-align:center; margin-bottom:1rem;'>
         본 애플리케이션은 비트코인(BTC)과 이더리움(ETH)을 활용한 <br/>
+
         <strong>최적 이동평균 전략</strong>을 매일 업데이트하여 제공합니다.<br/>
         간단한 지표와 차트로 전략 성과를 손쉽게 확인해 보세요!
+ main
         </div>""",
         unsafe_allow_html=True,
     )
     
+
     # 데이터 로드
     results = load_strategy_results()
+main
     if not results:
         st.stop()
     
