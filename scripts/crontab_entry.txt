@@ -1,0 +1,4 @@
+# 매일 한국시간 오전 9시에 데이터 업데이트
+0 0 * * * TZ=Asia/Seoul /usr/bin/env bash /path/to/crypto_strategy_app/scripts/update_data.sh
+# 25분마다 웹 앱을 깨우기
+*/25 * * * * /usr/bin/env bash /path/to/crypto_strategy_app/scripts/keep_awake.sh
