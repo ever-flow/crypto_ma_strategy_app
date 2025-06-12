@@ -7,14 +7,18 @@ from plotly.subplots import make_subplots
 import json
 import datetime
 from dateutil.relativedelta import relativedelta
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
 import os
+
 import warnings
 warnings.filterwarnings('ignore')
 
 # 페이지 설정
 st.set_page_config(
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
     page_title="암호화폐 전략 분석",
     page_icon="📈",
+
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -148,6 +152,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
 def _results_mtime():
     """결과 파일 수정 시간을 반환하여 캐싱 무효화를 돕는다."""
     try:
@@ -161,6 +166,7 @@ def load_strategy_results(mtime: float):
     """저장된 전략 결과를 로드"""
     try:
         with open("data/strategy_results.json", "r", encoding="utf-8") as f:
+
             return json.load(f)
     except FileNotFoundError:
         st.error("❌ 전략 결과 파일을 찾을 수 없습니다. 데이터 업데이트가 필요합니다.")
@@ -254,23 +260,29 @@ def main():
     # 헤더
     st.markdown("""
     <div class="hero-section">
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
         <h1 class="hero-title">암호화폐 최적 전략 분석</h1>
         <p class="hero-subtitle">AI 기반 이동평균 최적화&nbsp;&bull;&nbsp;실시간 매수/매도 신호&nbsp;&bull;&nbsp;고도화된 성과 분석</p>
+
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(
         """<div style='text-align:center; margin-bottom:1rem;'>
         본 애플리케이션은 비트코인(BTC)과 이더리움(ETH)을 활용한 <br/>
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
         <strong>최적 이동평균 전략</strong>을 매일 오전 9시(KST) 갱신합니다.<br/>
         새로 계산된 결과가 있을 때만 업데이트되며,<br/>
         그 외 시간에는 가장 최근 결과를 빠르게 보여줍니다.
+
         </div>""",
         unsafe_allow_html=True,
     )
     
+dhphqq-codex/한국시간-오전-9시-자동-업데이트-및-wake-처리
     # 데이터 로드 (파일 변경 시에만 새로 읽음)
     results = load_strategy_results(_results_mtime())
+
     if not results:
         st.stop()
     
