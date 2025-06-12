@@ -2,7 +2,4 @@
 __pycache__/
 *.py[cod]
 
-# Data and logs
-# Ignore log files
-/data/*.log
-# Keep sample strategy_results.json in version control
+ main
