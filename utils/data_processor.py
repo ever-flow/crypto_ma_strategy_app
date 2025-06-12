@@ -469,10 +469,13 @@ def run_optimization_and_save():
         'end': data.index[-1].isoformat()
     }
     
-    with open('strategy_results.json', 'w', encoding='utf-8') as f:
+    # 결과 파일은 data 폴더에 저장
+    output_path = os.path.join('data', 'strategy_results.json')
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    
-    print(f"\n✅ 최적화 완료 및 결과 저장: strategy_results.json")
+
+    print(f"\n✅ 최적화 완료 및 결과 저장: {output_path}")
     return results
 
 if __name__ == "__main__":
