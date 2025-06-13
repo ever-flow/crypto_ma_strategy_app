@@ -12,7 +12,8 @@ mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/update.log"
 echo "[$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S')] 자동 업데이트 시작" >> "$LOG_FILE"
 
-python3 utils/data_processor.py >> "$LOG_FILE" 2>&1
+PYTHON_CMD="${PYTHON:-$(command -v python3)}"
+"$PYTHON_CMD" utils/data_processor.py >> "$LOG_FILE" 2>&1
 
 if [ $? -eq 0 ]; then
     echo "[$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S')] 자동 업데이트 성공" >> "$LOG_FILE"

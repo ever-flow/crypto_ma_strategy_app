@@ -10,6 +10,8 @@ import json
 import datetime
 from dateutil.relativedelta import relativedelta
 import os
+import sys
+import subprocess
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -295,7 +297,9 @@ def main():
 
     if st.button("🔄 데이터 수동 업데이트", key="manual_refresh"):
         with st.spinner("업데이트 중..."):
-            os.system("bash scripts/update_data.sh")
+            env = os.environ.copy()
+            env["PYTHON"] = sys.executable
+            subprocess.run(["bash", "scripts/update_data.sh"], env=env)
         try:
             st.rerun()
         except AttributeError:
