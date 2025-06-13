@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run update script
+        env:
+          PYTHON: ${{ env.pythonLocation }}/bin/python
+
         run: bash scripts/update_data.sh
       - name: Commit results
         run: |

@@ -15,7 +15,7 @@ requirements.txt  필요 패키지 목록
 ## 자동 데이터 업데이트
 
 - `scripts/update_data.sh` : 최신 데이터를 내려받고 결과 파일과 로그를 갱신합니다.
-- `scripts/update_data.sh` 는 `PYTHON` 환경 변수로 지정한 파이썬을 사용합니다. 앱에서 수동 업데이트 시 현재 파이썬 실행 파일을 전달해 의존성 문제를 방지합니다.
+- `scripts/update_data.sh` 는 `PYTHON` 환경 변수로 지정한 파이썬을 사용합니다. 앱에서 수동 업데이트 시 현재 파이썬 실행 파일을 전달해 의존성 문제를 방지합니다. `.github/workflows/update_data.yml`에서도 같은 값을 설정해 모듈 누락 오류를 막습니다.
 - `scripts/keep_awake.sh` : 배포 후 슬립 상태 방지를 위해 주기적으로 웹 앱 URL을 호출합니다.
 - `scripts/crontab_entry.txt` : 로컬 서버에서 사용할 경우 참고할 크론탭 예시입니다.
 - `.github/workflows/update_data.yml` : GitHub Actions에서 매일 0:00 UTC(한국시간 9시)에 실행되어 데이터를 자동 업데이트합니다.
