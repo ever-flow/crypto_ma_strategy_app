@@ -21,6 +21,12 @@ requirements.txt  필요 패키지 목록
 - `.github/workflows/keep_awake.yml` : 일정 간격으로 앱을 호출해 슬립을 방지합니다. `STREAMLIT_URL` 시크릿에 배포된 앱 주소를 넣어 사용합니다.
 - `data/update.log` : 업데이트 과정의 로그가 누적되는 파일로, 앱에서도 최근 기록을 확인할 수 있습니다.
 
+## 주요 전략
+
+- **BTC/ETH 단독 투자**
+- **50:50 리밸런싱**: BTC 50%, ETH 50%
+- **60:40 리밸런싱**: BTC 60%, ETH 40%
+
 ## 사용 방법
 
 1. 의존성 설치
