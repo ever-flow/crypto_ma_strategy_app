@@ -249,8 +249,7 @@ def create_strategy_card_streamlit(strategy_name, strategy_data, emoji):
             st.metric("스마트 점수", f"{strategy_data['combined_sortino']:.3f}", help="높을수록 좋은 전략입니다")
             st.metric("최대 손실", f"{strategy_data['drawdown']*100:.1f}%", help="투자 기간 중 가장 큰 손실률")
         with col2:
-            cagr_delta = f"{strategy_data['cagr']*100:.1f}%" if strategy_data['cagr'] > 0 else None
-            st.metric("연평균 수익률", f"{strategy_data['cagr']*100:.1f}%", delta=cagr_delta, help="1년 동안 평균적으로 얻는 수익률")
+            st.metric("연평균 수익률", f"{strategy_data['cagr']*100:.1f}%", help="1년 동안 평균적으로 얻는 수익률")
             st.metric("위험 대비 수익", f"{strategy_data['sharpe']:.2f}", help="위험 대비 얼마나 좋은 수익을 내는지 측정")
 
 def main():
@@ -293,6 +292,20 @@ def main():
         <div class="update-text"><strong>최적화 방식:</strong> 스마트 점수 (전체 30% + 최근3년 40% + 최근1년 30%)</div>
     </div>
     """, unsafe_allow_html=True)
+
+    with st.expander("업데이트 방식 자세히 보기"):
+        st.write(
+            "- 매일 9시(KST)에 `scripts/update_data.sh`가 실행되어 데이터를 새로 계산합니다."
+        )
+        st.write(
+            "- 결과는 `data/strategy_results.json`과 `data/update.log`에 저장되며 앱은 이 파일을 바로 로드합니다."
+        )
+        if os.path.exists("data/update.log"):
+            try:
+                log_lines = open("data/update.log", "r", encoding="utf-8").read().splitlines()[-5:]
+                st.code("\n".join(log_lines), language="text")
+            except Exception:
+                st.info("로그 파일을 불러올 수 없습니다.")
     
     # 스마트 점수 설명
     st.markdown("""
@@ -499,12 +512,21 @@ def main():
         - **위험 대비 수익**: 위험 대비 얼마나 좋은 수익을 내는지 (높을수록 좋음)
         - **변동성**: 가격이 얼마나 많이 오르락내리락 하는지 (낮을수록 안정적)
         - **스마트 점수**: 종합적인 투자 전략 우수성 (높을수록 좋음)
-        
+
         ### ⚠️ 주의사항
         - 과거 성과가 미래 수익을 보장하지 않습니다
         - 투자는 본인 책임이며, 충분한 공부 후 결정하세요
         - 이 분석은 교육 목적으로 제작되었습니다
         """)
+
+    st.markdown(
+        """
+        <div class="explanation-text" style="margin-top:1rem;">
+            <strong>스마트 점수 계산법</strong>: 전체 기간 Sortino 30% + 최근 3년 Sortino 40% + 최근 1년 Sortino 30%
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     
     st.markdown('</div>', unsafe_allow_html=True)
 
