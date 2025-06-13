@@ -463,7 +463,14 @@ def run_optimization_and_save():
         }
     
     # 결과 저장
-    results['last_updated'] = datetime.datetime.now().isoformat()
+    # 한국시간(KST) 기준으로 가장 최근 9시 시각을 기록
+    now_kst = datetime.datetime.now(datetime.timezone.utc).astimezone(
+        datetime.timezone(datetime.timedelta(hours=9))
+    )
+    latest_9am = now_kst.replace(hour=9, minute=0, second=0, microsecond=0)
+    if now_kst < latest_9am:
+        latest_9am -= datetime.timedelta(days=1)
+    results['last_updated'] = latest_9am.isoformat()
     results['data_period'] = {
         'start': data.index[0].isoformat(),
         'end': data.index[-1].isoformat()
