@@ -20,6 +20,7 @@ jobs:
       - name: Run update script
         env:
           PYTHON: ${{ env.pythonLocation }}/bin/python
+
         run: bash scripts/update_data.sh
       - name: Commit results
         run: |
