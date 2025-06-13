@@ -15,7 +15,6 @@ echo "[$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S')] 자동 업데이트 시작" >
 PYTHON_CMD="${PYTHON:-$(command -v python3)}"
 # 필요한 패키지가 없으면 자동으로 설치
 "$PYTHON_CMD" -m pip install -r requirements.txt >> "$LOG_FILE" 2>&1
-
 "$PYTHON_CMD" utils/data_processor.py >> "$LOG_FILE" 2>&1
 
 if [ $? -eq 0 ]; then

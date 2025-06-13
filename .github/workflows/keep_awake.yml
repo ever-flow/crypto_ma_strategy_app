@@ -9,8 +9,9 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Curl app
-        run: |
-          curl -s -o /dev/null "$APP_URL"
+      - uses: actions/checkout@v3
+      - name: Wake app
+        run: bash scripts/keep_awake.sh
         env:
           APP_URL: ${{ secrets.STREAMLIT_URL }}
+        continue-on-error: true

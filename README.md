@@ -19,7 +19,7 @@ requirements.txt  필요 패키지 목록
 - `scripts/keep_awake.sh` : 배포 후 슬립 상태 방지를 위해 주기적으로 웹 앱 URL을 호출합니다.
 - `scripts/crontab_entry.txt` : 로컬 서버에서 사용할 경우 참고할 크론탭 예시입니다.
 - `.github/workflows/update_data.yml` : GitHub Actions에서 매일 0:00 UTC(한국시간 9시)에 실행되어 데이터를 자동 업데이트합니다.
-- `.github/workflows/keep_awake.yml` : 일정 간격으로 앱을 호출해 슬립을 방지합니다. `STREAMLIT_URL` 시크릿에 배포된 앱 주소를 넣어 사용합니다.
+- `.github/workflows/keep_awake.yml` : 일정 간격으로 앱을 호출해 슬립을 방지합니다. `STREAMLIT_URL` 시크릿에 배포된 앱 주소를 넣어 사용하며, 값이 없으면 무시합니다.
 - `data/update.log` : 업데이트 과정의 로그가 누적되는 파일로, 앱에서도 최근 기록을 확인할 수 있습니다.
 - 앱 상단의 **🔄 데이터 수동 업데이트** 버튼을 눌러 원하는 시점에 최신 데이터를 다시 받을 수 있습니다.
 
