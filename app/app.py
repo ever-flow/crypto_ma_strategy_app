@@ -292,6 +292,22 @@ def main():
         <div class="update-text"><strong>최적화 방식:</strong> 스마트 점수 (전체 30% + 최근3년 40% + 최근1년 30%)</div>
     </div>
     """, unsafe_allow_html=True)
+
+    if st.button("🔄 데이터 수동 업데이트"):
+        with st.spinner("업데이트 중..."):
+            os.system("bash scripts/update_data.sh")
+        try:
+            st.rerun()
+        except AttributeError:
+            st.experimental_rerun()
+
+    if os.path.exists("data/update.log"):
+        with st.expander("최근 업데이트 로그"):
+            try:
+                log_lines = open("data/update.log", "r", encoding="utf-8").read().splitlines()[-5:]
+                st.code("\n".join(log_lines), language="text")
+            except Exception:
+                st.info("로그 파일을 불러올 수 없습니다.")
     
     if st.button("🔄 데이터 수동 업데이트"):
         with st.spinner("업데이트 중..."):
