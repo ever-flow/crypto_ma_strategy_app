@@ -362,105 +362,115 @@ def run_optimization_and_save():
     """
     print("🕒 암호화폐 데이터 수집 중...")
     data = fetch_crypto_data()
-    
+
     if data.empty:
-        print("❌ 데이터 수집 실패")
-        return
-    
-    print(f"✅ 데이터 수집 완료: {data.index[0].date()} ~ {data.index[-1].date()}")
-    
-    windows = list(range(10, 201, 10))
-    results = {}
-    
-    # BTC 전략 평가
-    print("\n📈 BTC 전략 평가 중...")
-    if 'BTC' in data and not data['BTC'].empty:
-        btc_results = []
+        print("❌ 데이터 수집 실패 - 이전 결과 사용")
+        try:
+            with open(os.path.join('data', 'strategy_results.json'), 'r', encoding='utf-8') as f:
+                results = json.load(f)
+            data_start = results.get('data_period', {}).get('start')
+            data_end = results.get('data_period', {}).get('end')
+        except Exception:
+            print("이전 결과를 불러올 수 없습니다.")
+            return
+    else:
+        print(f"✅ 데이터 수집 완료: {data.index[0].date()} ~ {data.index[-1].date()}")
+
+        windows = list(range(10, 201, 10))
+        results = {}
+
+        # BTC 전략 평가
+        print("\n📈 BTC 전략 평가 중...")
+        if 'BTC' in data and not data['BTC'].empty:
+            btc_results = []
+            for w in windows:
+                btc_results.append(evaluate_strategy(data["BTC"].copy(), w))
+            btc_df = pd.DataFrame(btc_results).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
+            if not btc_df.empty:
+                best_btc = btc_df.iloc[0]
+                results['BTC'] = {
+                    'optimal_ma': int(best_btc['window']),
+                    'combined_sortino': float(best_btc['combined_sortino']) if not np.isnan(best_btc['combined_sortino']) else 0.0,
+                    'cagr': float(best_btc['cagr']),
+                    'sharpe': float(best_btc['sharpe']),
+                    'sortino': float(best_btc['sortino']) if not np.isnan(best_btc['sortino']) else 0.0,
+                    'drawdown': float(best_btc['drawdown']),
+                    'volatility': float(best_btc['volatility']),
+                    'final_value': float(best_btc['final_value']),
+                    'signal': best_btc['signal'],
+                    'signal_color': best_btc['signal_color'],
+                    'cumulative_series': {str(k): v for k, v in best_btc['cumulative_series'].to_dict().items()}
+                }
+
+        # ETH 전략 평가
+        print("📈 ETH 전략 평가 중...")
+        if 'ETH' in data and not data['ETH'].empty:
+            eth_results = []
+            for w in windows:
+                eth_results.append(evaluate_strategy(data["ETH"].copy(), w))
+            eth_df = pd.DataFrame(eth_results).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
+            if not eth_df.empty:
+                best_eth = eth_df.iloc[0]
+                results['ETH'] = {
+                    'optimal_ma': int(best_eth['window']),
+                    'combined_sortino': float(best_eth['combined_sortino']) if not np.isnan(best_eth['combined_sortino']) else 0.0,
+                    'cagr': float(best_eth['cagr']),
+                    'sharpe': float(best_eth['sharpe']),
+                    'sortino': float(best_eth['sortino']) if not np.isnan(best_eth['sortino']) else 0.0,
+                    'drawdown': float(best_eth['drawdown']),
+                    'volatility': float(best_eth['volatility']),
+                    'final_value': float(best_eth['final_value']),
+                    'signal': best_eth['signal'],
+                    'signal_color': best_eth['signal_color'],
+                    'cumulative_series': {str(k): v for k, v in best_eth['cumulative_series'].to_dict().items()}
+                }
+
+        # 50:50 리밸런싱 전략 평가
+        print("📈 50:50 리밸런싱 전략 평가 중...")
+        rebal_5050 = []
         for w in windows:
-            btc_results.append(evaluate_strategy(data["BTC"].copy(), w))
-        btc_df = pd.DataFrame(btc_results).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
-        if not btc_df.empty:
-            best_btc = btc_df.iloc[0]
-            results['BTC'] = {
-                'optimal_ma': int(best_btc['window']),
-                'combined_sortino': float(best_btc['combined_sortino']) if not np.isnan(best_btc['combined_sortino']) else 0.0,
-                'cagr': float(best_btc['cagr']),
-                'sharpe': float(best_btc['sharpe']),
-                'sortino': float(best_btc['sortino']) if not np.isnan(best_btc['sortino']) else 0.0,
-                'drawdown': float(best_btc['drawdown']),
-                'volatility': float(best_btc['volatility']),
-                'final_value': float(best_btc['final_value']),
-                'signal': best_btc['signal'],
-                'signal_color': best_btc['signal_color'],
-                'cumulative_series': {str(k): v for k, v in best_btc['cumulative_series'].to_dict().items()}
+            rebal_5050.append(evaluate_rebalancing_strategy(data.copy(), w, rebalance_freq='M', weight_btc=0.5, weight_eth=0.5))
+        rebal_5050_df = pd.DataFrame(rebal_5050).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
+        if not rebal_5050_df.empty:
+            best_5050 = rebal_5050_df.iloc[0]
+            results['Rebal_50_50'] = {
+                'optimal_ma': int(best_5050['window']),
+                'combined_sortino': float(best_5050['combined_sortino']) if not np.isnan(best_5050['combined_sortino']) else 0.0,
+                'cagr': float(best_5050['cagr']),
+                'sharpe': float(best_5050['sharpe']),
+                'sortino': float(best_5050['sortino']) if not np.isnan(best_5050['sortino']) else 0.0,
+                'drawdown': float(best_5050['drawdown']),
+                'volatility': float(best_5050['volatility']),
+                'final_value': float(best_5050['final_value']),
+                'signal': best_5050['signal'],
+                'signal_color': best_5050['signal_color'],
+                'cumulative_series': {str(k): v for k, v in best_5050['cumulative_series'].to_dict().items()}
             }
-    
-    # ETH 전략 평가
-    print("📈 ETH 전략 평가 중...")
-    if 'ETH' in data and not data['ETH'].empty:
-        eth_results = []
+
+        # 60:40 리밸런싱 전략 평가
+        print("📈 60:40 리밸런싱 전략 평가 중...")
+        rebal_6040 = []
         for w in windows:
-            eth_results.append(evaluate_strategy(data["ETH"].copy(), w))
-        eth_df = pd.DataFrame(eth_results).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
-        if not eth_df.empty:
-            best_eth = eth_df.iloc[0]
-            results['ETH'] = {
-                'optimal_ma': int(best_eth['window']),
-                'combined_sortino': float(best_eth['combined_sortino']) if not np.isnan(best_eth['combined_sortino']) else 0.0,
-                'cagr': float(best_eth['cagr']),
-                'sharpe': float(best_eth['sharpe']),
-                'sortino': float(best_eth['sortino']) if not np.isnan(best_eth['sortino']) else 0.0,
-                'drawdown': float(best_eth['drawdown']),
-                'volatility': float(best_eth['volatility']),
-                'final_value': float(best_eth['final_value']),
-                'signal': best_eth['signal'],
-                'signal_color': best_eth['signal_color'],
-                'cumulative_series': {str(k): v for k, v in best_eth['cumulative_series'].to_dict().items()}
+            rebal_6040.append(evaluate_rebalancing_strategy(data.copy(), w, rebalance_freq='M', weight_btc=0.6, weight_eth=0.4))
+        rebal_6040_df = pd.DataFrame(rebal_6040).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
+        if not rebal_6040_df.empty:
+            best_6040 = rebal_6040_df.iloc[0]
+            results['Rebal_60_40'] = {
+                'optimal_ma': int(best_6040['window']),
+                'combined_sortino': float(best_6040['combined_sortino']) if not np.isnan(best_6040['combined_sortino']) else 0.0,
+                'cagr': float(best_6040['cagr']),
+                'sharpe': float(best_6040['sharpe']),
+                'sortino': float(best_6040['sortino']) if not np.isnan(best_6040['sortino']) else 0.0,
+                'drawdown': float(best_6040['drawdown']),
+                'volatility': float(best_6040['volatility']),
+                'final_value': float(best_6040['final_value']),
+                'signal': best_6040['signal'],
+                'signal_color': best_6040['signal_color'],
+                'cumulative_series': {str(k): v for k, v in best_6040['cumulative_series'].to_dict().items()}
             }
-    
-    # 50:50 리밸런싱 전략 평가
-    print("📈 50:50 리밸런싱 전략 평가 중...")
-    rebal_5050 = []
-    for w in windows:
-        rebal_5050.append(evaluate_rebalancing_strategy(data.copy(), w, rebalance_freq='M', weight_btc=0.5, weight_eth=0.5))
-    rebal_5050_df = pd.DataFrame(rebal_5050).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
-    if not rebal_5050_df.empty:
-        best_5050 = rebal_5050_df.iloc[0]
-        results['Rebal_50_50'] = {
-            'optimal_ma': int(best_5050['window']),
-            'combined_sortino': float(best_5050['combined_sortino']) if not np.isnan(best_5050['combined_sortino']) else 0.0,
-            'cagr': float(best_5050['cagr']),
-            'sharpe': float(best_5050['sharpe']),
-            'sortino': float(best_5050['sortino']) if not np.isnan(best_5050['sortino']) else 0.0,
-            'drawdown': float(best_5050['drawdown']),
-            'volatility': float(best_5050['volatility']),
-            'final_value': float(best_5050['final_value']),
-            'signal': best_5050['signal'],
-            'signal_color': best_5050['signal_color'],
-            'cumulative_series': {str(k): v for k, v in best_5050['cumulative_series'].to_dict().items()}
-        }
-    
-    # 60:40 리밸런싱 전략 평가
-    print("📈 60:40 리밸런싱 전략 평가 중...")
-    rebal_6040 = []
-    for w in windows:
-        rebal_6040.append(evaluate_rebalancing_strategy(data.copy(), w, rebalance_freq='M', weight_btc=0.6, weight_eth=0.4))
-    rebal_6040_df = pd.DataFrame(rebal_6040).sort_values("combined_sortino", ascending=False).reset_index(drop=True)
-    if not rebal_6040_df.empty:
-        best_6040 = rebal_6040_df.iloc[0]
-        results['Rebal_60_40'] = {
-            'optimal_ma': int(best_6040['window']),
-            'combined_sortino': float(best_6040['combined_sortino']) if not np.isnan(best_6040['combined_sortino']) else 0.0,
-            'cagr': float(best_6040['cagr']),
-            'sharpe': float(best_6040['sharpe']),
-            'sortino': float(best_6040['sortino']) if not np.isnan(best_6040['sortino']) else 0.0,
-            'drawdown': float(best_6040['drawdown']),
-            'volatility': float(best_6040['volatility']),
-            'final_value': float(best_6040['final_value']),
-            'signal': best_6040['signal'],
-            'signal_color': best_6040['signal_color'],
-            'cumulative_series': {str(k): v for k, v in best_6040['cumulative_series'].to_dict().items()}
-        }
+
+        data_start = data.index[0].isoformat()
+        data_end = data.index[-1].isoformat()
     
     # 결과 저장
     # 한국시간(KST) 기준으로 가장 최근 9시 시각을 기록
@@ -472,8 +482,8 @@ def run_optimization_and_save():
         latest_9am -= datetime.timedelta(days=1)
     results['last_updated'] = latest_9am.isoformat()
     results['data_period'] = {
-        'start': data.index[0].isoformat(),
-        'end': data.index[-1].isoformat()
+        'start': data_start,
+        'end': data_end
     }
     
     # 결과 파일은 data 폴더에 저장

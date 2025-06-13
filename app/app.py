@@ -292,15 +292,14 @@ def main():
         <div class="update-text"><strong>최적화 방식:</strong> 스마트 점수 (전체 30% + 최근3년 40% + 최근1년 30%)</div>
     </div>
     """, unsafe_allow_html=True)
+    
+    if st.button("🔄 데이터 수동 업데이트"):
+        with st.spinner("업데이트 중..."):
+            os.system("bash scripts/update_data.sh")
+        st.experimental_rerun()
 
-    with st.expander("업데이트 방식 자세히 보기"):
-        st.write(
-            "- 매일 9시(KST)에 `scripts/update_data.sh`가 실행되어 데이터를 새로 계산합니다."
-        )
-        st.write(
-            "- 결과는 `data/strategy_results.json`과 `data/update.log`에 저장되며 앱은 이 파일을 바로 로드합니다."
-        )
-        if os.path.exists("data/update.log"):
+    if os.path.exists("data/update.log"):
+        with st.expander("최근 업데이트 로그"):
             try:
                 log_lines = open("data/update.log", "r", encoding="utf-8").read().splitlines()[-5:]
                 st.code("\n".join(log_lines), language="text")
