@@ -292,7 +292,7 @@ def main():
         <div class="update-text"><strong>최적화 방식:</strong> 스마트 점수 (전체 30% + 최근3년 40% + 최근1년 30%)</div>
     </div>
     """, unsafe_allow_html=True)
-
+    
     if st.button("🔄 데이터 수동 업데이트"):
         with st.spinner("업데이트 중..."):
             os.system("bash scripts/update_data.sh")
