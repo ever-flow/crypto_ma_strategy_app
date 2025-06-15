@@ -1,0 +1,17 @@
+name: Keep Streamlit awake
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Wake app
+        run: bash scripts/keep_awake.sh
+        env:
+          APP_URL: ${{ secrets.STREAMLIT_URL }}
+        continue-on-error: true
