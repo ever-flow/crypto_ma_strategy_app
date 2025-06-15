@@ -6,6 +6,7 @@
 timestamp="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S')"
 if [ -z "$APP_URL" ]; then
     echo "[$timestamp] APP_URL not set, skipping wake up"
+
     exit 0
 fi
 
